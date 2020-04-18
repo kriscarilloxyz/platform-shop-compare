@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Vuetify from 'vuetify/lib'
+import config from './config'
 
 Vue.use(Vuetify)
-const theme = {}
 
-export default new Vuetify({ icons: { iconfont: 'mdi' }, theme: theme })
+export default new Vuetify(config.vuetify)
