@@ -47,7 +47,7 @@
 <script>
 
 export default {
-  name: 'MenetaAuth',
+  name: 'MinetaAuth',
   data: () => ({
     valid: true,
     email: '',
