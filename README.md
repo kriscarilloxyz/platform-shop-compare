@@ -1,7 +1,5 @@
-<<<<<<< HEAD
 # platform-shop-compare
-=======
-# template-meneta-basic
+
 
 ## Project setup
 ```
@@ -40,4 +38,3 @@ npm run test:unit
 
 ### Customize configuration
 See [Configuration Reference](https://cli.vuejs.org/config/).
->>>>>>> e61cef3812fc66cd9890d049392af0c8c17f9090
