@@ -5,6 +5,11 @@ import store from './store'
 import './registerServiceWorker'
 import vuetify from './plugins/vuetify'
 
+/** Layouts */
+import Page from './layouts/Page'
+
+Vue.component('page', Page)
+
 Vue.config.productionTip = false
 
 new Vue({
