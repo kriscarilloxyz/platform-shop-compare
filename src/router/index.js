@@ -1,13 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import MinetaLogin from '../views/mineta/MinetaLogin.vue'
+import MinetaLogin from '../views/mineta/MinetaLogin'
 
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    name: 'Mineta Login',
+    name: 'Mineta Auth',
     component: MinetaLogin
   }
 ]

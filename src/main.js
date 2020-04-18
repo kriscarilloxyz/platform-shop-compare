@@ -19,6 +19,9 @@ Vue.mixin({
     // Project Details
     firebase: firebase,
     db: db,
+    global: {
+      loading: false
+    },
     project: {
       name: 'Mineta XYZ'
     },
