@@ -24,13 +24,21 @@
                       placeholder="********"
                       :rules="formRules.password" />
       </v-form>
+
+      <a href="#"
+         @click="register=!register"
+         v-if="!register">Don't have an account?</a>
+      <a href="#"
+         @click="register=!register"
+         v-else>Already have an account?</a>
+
     </v-card-text>
     <v-card-actions>
       <v-btn :loading="loading"
              color="primary"
              @click="login"
              :disabled="!valid">
-        Login
+        {{btnText}}
       </v-btn>
     </v-card-actions>
   </v-card>
@@ -45,19 +53,32 @@ export default {
     email: '',
     password: '',
     errorMsg: false,
-    loading: false
+    loading: false,
+    register: false
   }),
+  computed: {
+    btnText () { return this.register ? 'register and login' : 'login' }
+  },
   methods: {
     async login () {
       if (this.$refs.form.validate()) {
         this.loading = true
 
-        await this.firebase.auth().signInWithEmailAndPassword(this.email, this.password)
-          .catch(err => {
-            console.log(err)
-            this.errorMsg = err
-            this.loading = false
-          })
+        if (this.register) {
+          await this.firebase.auth().createUserWithEmailAndPassword(this.email, this.password)
+            .catch(err => {
+              console.log(err)
+              this.errorMsg = err
+              this.loading = false
+            })
+        } else {
+          await this.firebase.auth().signInWithEmailAndPassword(this.email, this.password)
+            .catch(err => {
+              console.log(err)
+              this.errorMsg = err
+              this.loading = false
+            })
+        }
 
         this.loading = false
       }
