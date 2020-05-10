@@ -2,7 +2,7 @@ const { spider } = require('./spider')
 
 async function _chsmith (db, doc) {
   console.log('[START] https://www.chsmith.com.au/')
-  const $ = await spider.GET(doc.link, true, false)
+  const $ = await spider.GET(doc.link)
   const title = spider.sanitizeText($('#amfpc-product-link').text())
   let price
 
