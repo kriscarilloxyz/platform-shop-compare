@@ -2,12 +2,16 @@ const _spiders = {}
 const registered = [
   'slhobie',
   'dinga',
-  'chsmith'
+  'chsmith',
+  'surgekayaks',
+  'motackle',
+  'baysports',
+  'findsports',
+  'whitworths'
 ]
 
 registered.forEach(module => {
   _spiders[module] = require(`./spiders/${module}`)[module]
 })
 
-console.log(_spiders)
 exports.spiders = _spiders

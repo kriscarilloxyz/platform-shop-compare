@@ -6,7 +6,6 @@ async function _findsports (db, doc) {
   const title = spider.sanitizeText($('h1[itemprop="name"]').text())
   let price
 
-
   $('div[itemprop="offers"]').each((index, element) => {
     const content = spider.sanitizeText($(element).text())
 
