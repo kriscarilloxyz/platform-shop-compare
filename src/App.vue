@@ -1,40 +1,32 @@
 <template>
-  <div id="App">
-    <component :is="layout">
-      <v-container v-if="global.loading"
-                   fill-height>
-        <v-layout justify-center
-                  align-center>
-          <v-flex xs12
-                  class="text-center">
-            <v-progress-circular color="primary"
-                                 indeterminate />
-            <p class="display-1 grey--text mt-5">{{project.name.toLowerCase()}}</p>
-          </v-flex>
-        </v-layout>
-      </v-container>
-      <router-view v-else />
-    </component>
+  <div id="app">
+    <div id="nav">
+      <router-link to="/">Home</router-link> |
+      <router-link to="/about">About</router-link>
+    </div>
+    <router-view/>
   </div>
 </template>
 
-<script>
-export default {
-  name: 'App',
-  computed: {
-    layout () { return (this.$route.meta.layout || 'page') }
-  },
-  async mounted () {
-    this.global.loading = true
-    await this.firebase.auth().onAuthStateChanged(user => {
-      if (user) {
-        this.$store.commit('UPDATE_USER', user)
-        this.global.loading = false
-      } else {
-        this.$store.commit('UPDATE_USER', {})
-        this.global.loading = false
-      }
-    })
+<style lang="scss">
+#app {
+  font-family: Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-align: center;
+  color: #2c3e50;
+}
+
+#nav {
+  padding: 30px;
+
+  a {
+    font-weight: bold;
+    color: #2c3e50;
+
+    &.router-link-exact-active {
+      color: #42b983;
+    }
   }
 }
-</script>
+</style>
