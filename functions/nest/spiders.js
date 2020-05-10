@@ -1,7 +1,13 @@
-const { slhobie } = require('./spiders/slhobie')
-const { dinga } = require('./spiders/dinga')
+const _spiders = {}
+const registered = [
+  'slhobie',
+  'dinga',
+  'chsmith'
+]
 
-exports.spiders = {
-  slhobie,
-  dinga
-}
+registered.forEach(module => {
+  _spiders[module] = require(`./spiders/${module}`)[module]
+})
+
+console.log(_spiders)
+exports.spiders = _spiders
