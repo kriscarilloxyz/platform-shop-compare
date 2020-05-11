@@ -69,7 +69,9 @@ function saveResults (db, doc, title, price) {
         price,
         source: doc.link,
         scheduleId: doc.id,
-        createdAt: createdAt()
+        spider: doc.spider,
+        createdAt: createdAt(),
+        userEmail: doc.userEmail
       })
   }
 
