@@ -15,10 +15,10 @@ exports.spiders = functions
     const snapshot = await query.get()
 
     if (!snapshot.empty) {
-      console.log(`[LOG] ${snapshot.length} scheduled jobs.`)
       const tasks = []
       const docs = []
       snapshot.forEach(doc => docs.push({ ...doc.data(), id: doc.id }))
+      console.log(`[LOG] ${docs.length} scheduled jobs.`)
 
       docs.forEach(doc => {
         const task = new Promise((resolve, reject) => spiders[doc.spider](db, doc))
