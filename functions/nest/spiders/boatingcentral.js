@@ -4,7 +4,7 @@ async function _boatingcentral (db, doc) {
   console.log('[START] https://www.boatingcentral.com.au/')
   const $ = await spider.GET(doc.link)
   const title = spider.sanitizeText($('h1[itemprop="name"]').text())
-  let price;
+  let price
 
   $('div.productView-price > div.price-section.price-section--withTax > span.price').each((index, element) => {
     const CLASS = $(element).attr('class')

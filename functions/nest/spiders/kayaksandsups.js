@@ -9,9 +9,4 @@ async function _kayaksandsups (db, doc) {
   console.log(`[RESULTS] TITLE: ${title || 'n/a'} | PRICE: ${price || 'n/a'} | DEBUG: ${db ? 'NO' : 'YES'}`)
 }
 
-_kayaksandsups(
-  false,
-  { link: 'https://www.kayaksandsups.com.au/electric-pump-suitable-for-isup' }
-)
-
 exports.kayaksandsups = _kayaksandsups
