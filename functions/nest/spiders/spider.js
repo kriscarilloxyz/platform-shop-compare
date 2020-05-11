@@ -23,7 +23,7 @@ function sanitizeText (content) {
 }
 
 function sanitizePrice (content) {
-  return content.replace(/[^0-9.,]/g, '')
+  return content.replace(/[^0-9.]/g, '')
 }
 
 async function GET (link, debug = false, phantom = false) {
