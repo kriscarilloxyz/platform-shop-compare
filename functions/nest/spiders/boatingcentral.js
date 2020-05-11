@@ -17,6 +17,4 @@ async function _boatingcentral (db, doc) {
   console.log(`[RESULTS] TITLE: ${title || 'n/a'} | PRICE: ${price || 'n/a'} | DEBUG: ${db ? 'NO' : 'YES'}`)
 }
 
-
-
 exports.boatingcentral = _boatingcentral
