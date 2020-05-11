@@ -7,7 +7,18 @@ const registered = [
   'motackle',
   'baysports',
   'findsports',
-  'whitworths'
+  'whitworths',
+  'dreamkayaks',
+  'anacondastores',
+  'weekendwarrior',
+  'boatingcentral',
+  'kayaksandsups',
+  'arnoldsboatshop',
+  'blackhawkoutdoor',
+  'paddlesportsmegastore',
+  'theboatwarehouse',
+  'adelaidecanoeworks',
+  'kayaks2fish'
 ]
 
 registered.forEach(module => {
