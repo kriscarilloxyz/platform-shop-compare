@@ -1,7 +1,7 @@
 const { spider } = require('./spider')
 
 async function _dinga (db, doc) {
-  console.log('[START] https://slhobie.com.au')
+  console.log('[START] https://dinga.com.au')
   const $ = await spider.GET(doc.link, false, true)
   const title = spider.sanitizeText($('div.product-name > h1[itemprop="name"]').text())
   const price = spider.sanitizePrice($('span.price[itemprop="price"]').text())
