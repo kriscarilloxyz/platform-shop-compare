@@ -15,7 +15,6 @@ Monitor australian store product prices in real time. Made with Vue.js + Firebas
 - https://dinga.com.au
 - https://dreamkayaks.com.au
 - https://www.findsports.com.au
-- https://www.findsports.com.au
 - https://kayaks2fish.com.au
 - https://kayaksandsups.com.au
 - https://www.motackle.com.au

@@ -53,6 +53,7 @@
           <v-list-item v-else
                        :key="i"
                        link
+                       exact
                        :to="item.to">
             <v-list-item-action>
               <v-icon>{{ item.icon }}</v-icon>
@@ -85,20 +86,8 @@ export default {
     scheduled: [],
     drawer: null,
     items: [
-      { icon: 'mdi-view-dashboard', text: 'Dashboard', to: '/dashboard' }
-      // { icon: 'touch_app', text: 'Reminders' },
-      // { divider: true },
-      // { heading: 'Labels' },
-      // { icon: 'add', text: 'Create new label' },
-      // { divider: true },
-      // { icon: 'archive', text: 'Archive' },
-      // { icon: 'delete', text: 'Trash' },
-      // { divider: true },
-      // { icon: 'settings', text: 'Settings' },
-      // { icon: 'chat_bubble', text: 'Trash' },
-      // { icon: 'help', text: 'Help' },
-      // { icon: 'phonelink', text: 'App downloads' },
-      // { icon: 'keyboard', text: 'Keyboard shortcuts' }
+      { icon: 'mdi-clipboard-list', text: 'Monitor', to: '/dashboard' },
+      { icon: 'mdi-point-of-sale', text: 'Recent Sales', to: '/dashboard/recent_sales' }
     ]
   }),
   computed: {

@@ -175,7 +175,8 @@ export default {
             link,
             userEmail: this.user.email,
             lastPrice: 0,
-            spider: spider[0]
+            spider: spider[0],
+            createdAt: firebase.firestore.Timestamp.now()
           })
         } else {
           const submit = confirm('This is not a supported online store, would you like to submit a request?')

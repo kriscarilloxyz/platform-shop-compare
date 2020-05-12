@@ -7,7 +7,7 @@
       <v-navigation-drawer class="mt-3"
                            float
                            clipped
-                           right>
+                           permanent>
         <v-list dense
                 rounded>
           <v-list-item v-for="item in products"
