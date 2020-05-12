@@ -44,8 +44,6 @@
                 <v-icon>mdi-calendar-month</v-icon>
               </v-btn>
             </vc-date-picker>
-            <v-spacer />
-            {{ $route.params.spider || 'All'}}
           </v-card-title>
 
           <v-card-text>
@@ -53,9 +51,59 @@
           </v-card-text>
 
           <v-card-text>
-            <v-data-table :headers="headers"
-                          :items="sales">
-            </v-data-table>
+            <v-row class="text-center">
+              <v-col>
+                <p class="display-3">
+                  {{ $route.params.spider || 'All'}}
+                </p>
+              </v-col>
+              <v-col>
+                <p class="display-3">
+                  $ {{grossRevenue}}
+                </p>
+                <h1>Gross Revenue</h1>
+              </v-col>
+            </v-row>
+          </v-card-text>
+
+          <v-card-text>
+            <v-row class="text-center">
+              <v-col>
+                <p class="display-3">
+                  {{todaySales}}
+                </p>
+                <h1>Today</h1>
+              </v-col>
+              <v-col>
+                <p class="display-3">{{monthSales}}</p>
+                <h1>Month</h1>
+              </v-col>
+              <v-col>
+                <p class="display-3">
+                  {{yearSales}}
+                </p>
+                <h1>Year</h1>
+              </v-col>
+            </v-row>
+          </v-card-text>
+
+          <v-card-text>
+            <v-card flat>
+              <v-card-title>
+                Sales Volume
+                <v-spacer></v-spacer>
+                <v-text-field v-model="search"
+                              append-icon="mdi-magnify"
+                              label="Search"
+                              single-line
+                              hide-details></v-text-field>
+              </v-card-title>
+
+              <v-data-table :headers="headers"
+                            :items="salesVolume"
+                            :search="search">
+              </v-data-table>
+            </v-card>
           </v-card-text>
         </v-card>
 
@@ -125,16 +173,18 @@ export default {
     maxDate: null,
     selectedView: 'Monthly',
     headers: [
-      { text: 'Name', value: 'description' },
-      { text: 'Price', value: 'price' },
+      { text: 'SKU', value: 'sku' },
+      { text: 'LTS Price', value: 'price' },
       { text: 'Quantity', value: 'quantity' },
-      { text: 'SKU', value: 'sku' }
+      { text: 'Gross Revenue', value: 'gross' }
     ],
     sales: [],
     recentSales: [],
+    totalSales: [],
     link: '',
     dialog: false,
     isLoading: false,
+    search: '',
     spiders: [
       'slhobie',
       'dinga',
@@ -157,11 +207,120 @@ export default {
       'kayaks2fish'
     ]
   }),
+  mounted () {
+    this.$bind('recentSales', db.collection('recentSales').where('userEmail', '==', this.user.email))
+    this.$bind('sales', db.collection('sales').where('userEmail', '==', this.user.email))
+    this.dateRange.start = moment().startOf('month').toDate()
+    this.dateRange.end = moment().endOf('month').toDate()
+  },
   computed: {
-
     ...mapState([
       'user'
     ]),
+
+    grossRevenue () {
+      if (this.salesVolume.length) {
+        return _.sum(this.salesVolume.map(sale => parseFloat(sale.gross))).toFixed()
+      } else {
+        return 0
+      }
+    },
+
+    salesVolume () {
+      const reducer = (accumulator, currentValue) => accumulator + currentValue
+
+      let saleCollection = []
+      const spider = this.$route.params.spider
+
+      if (spider) {
+        saleCollection = this.sales
+          .filter(sale => sale.spider === spider)
+      } else {
+        saleCollection = this.sales
+      }
+      if (saleCollection.length) {
+        const salesBySKU = []
+        const skus = [...new Set(saleCollection.map(s => s.sku))]
+
+        skus.forEach(sku => {
+          const salesFiltered = saleCollection.filter(sale => sale.sku === sku)
+          const quantity = salesFiltered.map(sale => parseInt(sale.quantity)).reduce(reducer)
+          const price = salesFiltered.map(sale => sale.price).sort((a, b) => a - b)[0]
+          const gross = _.sum(salesFiltered.map(sale => parseFloat(sale.price) * parseInt(sale.quantity))).toFixed()
+          const saleVolume = {
+            sku,
+            price,
+            gross,
+            quantity
+          }
+          salesBySKU.push(saleVolume)
+        })
+
+        return salesBySKU
+      } else {
+        return []
+      }
+    },
+    todaySales () {
+      let saleCollection = []
+      const spider = this.$route.params.spider
+
+      if (spider) {
+        saleCollection = this.sales
+          .filter(sale => sale.spider === spider)
+      } else {
+        saleCollection = this.sales
+      }
+      if (saleCollection.length) {
+        return saleCollection
+          .filter(sale => {
+            return moment(sale.createdAt.toDate()).format('D') === moment().format('D')
+          })
+          .length
+      } else {
+        return 0
+      }
+    },
+    monthSales () {
+      let saleCollection = []
+      const spider = this.$route.params.spider
+
+      if (spider) {
+        saleCollection = this.sales
+          .filter(sale => sale.spider === spider)
+      } else {
+        saleCollection = this.sales
+      }
+      if (saleCollection.length) {
+        return saleCollection
+          .filter(sale => {
+            return moment(sale.createdAt.toDate()).format('MM YYYY') === moment().format('MM YYYY')
+          })
+          .length
+      } else {
+        return 0
+      }
+    },
+    yearSales () {
+      let saleCollection = []
+      const spider = this.$route.params.spider
+
+      if (spider) {
+        saleCollection = this.sales
+          .filter(sale => sale.spider === spider)
+      } else {
+        saleCollection = this.sales
+      }
+      if (saleCollection.length) {
+        return saleCollection
+          .filter(sale => {
+            return moment(sale.createdAt.toDate()).format('YYYY') === moment().format('YYYY')
+          })
+          .length
+      } else {
+        return 0
+      }
+    },
     chartData () {
       const chartDefault = {
         labels: [],
@@ -198,6 +357,7 @@ export default {
         newOpt.total = sale.quantity * sale.price
         const d = new Date(sale.ts * 1000)
         newOpt.date = moment(d)
+        newOpt.spider = sale.spider
 
         if (startDate.isValid && endDate.isValid) {
           const optD = newOpt.date
@@ -208,28 +368,37 @@ export default {
           totalSales.push(newOpt)
         }
       })
+
       const chartSales = {}
-      chartSales.labels = moment.monthsShort()
+      chartSales.labels = []
+
+      for (var i = parseInt(startDate.format('D')); i <= parseInt(endDate.format('D')); i++) {
+        chartSales.labels.push(i)
+      }
       chartSales.datasets = []
 
-      const description = [...new Set(totalSales.map(sale => sale.description))]
+      const categories = [...new Set(this.sales.map(sale => sale.spider))]
 
-      description.forEach(description => {
+      categories.forEach(category => {
         const color = randomFlatColors()
+        const sales = totalSales.filter(sale => sale.spider === category)
         const data = []
-        chartSales.labels.forEach(label => {
-          const totalSalesFiltered = totalSales
-            .filter(sale => sale.date.format('MMM') === label)
-            .filter(sale => sale.description === description)
 
-          if (totalSalesFiltered.length) {
-            data.push(_.sum(totalSalesFiltered.map(sale => sale.total)))
+        chartSales.labels.forEach(label => {
+          const filteredSales = sales
+            .filter(sale => parseInt(sale.date.format('D')) === label)
+
+          if (filteredSales.length) {
+            data.push(
+              _.sum(filteredSales.map(sale => sale.total)).toFixed(2)
+            )
           } else {
             data.push(0)
           }
         })
+
         chartSales.datasets.push({
-          label: description,
+          label: category,
           backgroundColor: color,
           pointBackgroundColor: color,
           borderColor: color,
@@ -240,14 +409,7 @@ export default {
       return chartSales
     }
   },
-  mounted () {
-    this.$bind('recentSales', db.collection('recentSales').where('userEmail', '==', this.user.email))
-    this.$bind('sales', db.collection('sales').where('userEmail', '==', this.user.email))
-  },
   methods: {
-    getRandomInt () {
-      return Math.floor(Math.random() * (50 - 5 + 1)) + 5
-    },
     close () {
       this.isLoading = false
       this.link = ''
@@ -275,8 +437,7 @@ export default {
       }
 
       try {
-        const { data } = await axios.post('https://us-central1-shopcompare-33b52.cloudfunctions.net/validateNeto', { link: netoUrl })
-        console.log(data)
+        await axios.post('https://us-central1-shopcompare-33b52.cloudfunctions.net/validateNeto', { link: netoUrl })
       } catch (error) {
         this.close()
         return alert(`Error validating ${netoUrl}, online shop might be using another CRM other than Neto.`)
