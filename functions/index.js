@@ -22,8 +22,10 @@ const _validateNeto = () => {
 
     if (link) {
       try {
-        await axios.get(link)
-        isValid = true
+        const response = await axios.get(link)
+        if (response.data.includes('NETO')) {
+          isValid = true
+        }
       } catch (err) {
         isValid = false
       }
