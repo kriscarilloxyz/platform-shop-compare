@@ -15,6 +15,7 @@ async function _boatingcentral (db, doc) {
   })
   if (title && price && db) { spider.saveResults(db, doc, title, price) }
   console.log(`[RESULTS] TITLE: ${title || 'n/a'} | PRICE: ${price || 'n/a'} | DEBUG: ${db ? 'NO' : 'YES'}`)
+  return price || 0
 }
 
 exports.boatingcentral = _boatingcentral

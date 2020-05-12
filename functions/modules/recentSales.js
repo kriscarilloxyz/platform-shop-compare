@@ -1,8 +1,8 @@
 const admin = require('firebase-admin')
 const axios = require('axios')
 
-async function _recentSales (db, params) {
-  const content = await axios.get(params.link)
+async function _recentSales (db, doc) {
+  const content = await axios.get(doc.netoUrl)
     .then(response => response.data)
 
   const items = content.split('|SKU')
@@ -33,7 +33,7 @@ async function _recentSales (db, params) {
 
     const d = new Date(sale.ts * 1000)
     sale.createdAt = admin.firestore.Timestamp.fromDate(d)
-    sale.spider = params.spider
+    sale.spider = doc.spider
     return sale
   })
 
@@ -47,52 +47,15 @@ async function _recentSales (db, params) {
     const docId = `${sale.ts}-${sale.sku}`
     const querySale = db.collection('sales').doc(docId)
     const snapshot = await querySale.get()
-
+    const spider = require(`../nest/spiders/${doc.spider}`)[doc.spider]
+    sale.url = doc.link + sale.url
+    sale.price = await spider(false, { link: sale.url })
+    sale.userEmail = doc.userEmail
     if (!snapshot.empty) {
       querySale.set(sale)
-      console.log(`[SALE] ADDED FROM ${params.spider}`)
+      console.log(`[LOG] SALE ADDED FROM ${doc.spider} linked ${doc.userEmail}`)
     }
   }
 }
-
-async function run () {
-
-  // ping for recent_sales
-  const pinged = [
-    // { link: 'https://adelaidecanoeworks.com.au', spider: 'adelaidecanoeworks' },
-    // { link: 'https://www.anacondastores.com', spider: 'anacondastores' },
-    // { link: 'https://arnoldsboatshop.com.au', spider: 'arnoldsboatshop' },
-    // { link: 'https://www.baysports.com.au', spider: 'baysports' },
-    // { link: 'https://www.blackhawkoutdoor.com.au', spider: 'blackhawkoutdoor' },
-    // { link: 'https://www.boatingcentral.com.au', spider: 'boatingcentral' },
-    // { link: 'https://www.chsmith.com.au', spider: 'chsmith' },
-    // { link: 'https://dinga.com.au', spider: 'dinga' },
-    // { link: 'https://dreamkayaks.com.au', spider: 'dreamkayaks' },
-    { link: 'https://www.findsports.com.au', spider: 'findsports' },
-    { link: 'https://kayaks2fish.com', spider: 'kayaks2fish' },
-    { link: 'https://kayaksandsups.com.au', spider: 'kayaksandsups' },
-    // { link: 'https://www.motackle.com.au', spider: 'motackle' },
-    // { link: 'https://paddlesportsmegastore.com.au', spider: 'paddlesportsmegastore' },
-    // { link: 'https://slhobie.com.au', spider: 'slhobie' },
-    // { link: 'https://surgekayaks.com.au', spider: 'surgekayaks' },
-    // { link: 'https://theboatwarehouse.com.au', spider: 'theboatwarehouse' },
-    // { link: 'https://weekendwarrior.net.au', spider: 'weekendwarrior' },
-    // { link: 'https://www.whitworths.com.au', spider: 'whitworths' }
-  ]
-
-  for (let i = 0; pinged.length > i; i++) {
-    const ping = pinged[i]
-    console.log(`[LOG] Recent sales extraction start ${ping.link + '/ajax/recent_sales'}`)
-    const params = {
-      link: ping.link + '/ajax/recent_sales',
-      spider: ping.spider
-
-    }
-
-    await _recentSales(false, params)
-  }
-}
-
-run()
 
 exports.recentSales = _recentSales

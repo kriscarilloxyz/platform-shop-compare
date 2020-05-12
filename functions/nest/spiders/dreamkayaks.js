@@ -8,6 +8,7 @@ async function _dreamkayaks (db, doc) {
   const price = spider.sanitizePrice($('.ProductPrice').text())
   if (title && price && db) { spider.saveResults(db, doc, title, price) }
   console.log(`[RESULTS] TITLE: ${title || 'n/a'} | PRICE: ${price || 'n/a'} | DEBUG: ${db ? 'NO' : 'YES'}`)
+  return price || 0
 }
 
 exports.dreamkayaks = _dreamkayaks

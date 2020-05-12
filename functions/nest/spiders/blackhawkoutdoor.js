@@ -7,11 +7,7 @@ async function _blackhawkoutdoor (db, doc) {
   const price = spider.sanitizePrice($('h3#price-field').text())
   if (title && price && db) { if (title && price && db) { spider.saveResults(db, doc, title, price) } }
   console.log(`[RESULTS] TITLE: ${title || 'n/a'} | PRICE: ${price || 'n/a'} | DEBUG: ${db ? 'NO' : 'YES'}`)
+  return price || 0
 }
-
-_blackhawkoutdoor(
-  false,
-  { link: 'https://www.blackhawkoutdoor.com.au/collections/home-page-collection/products/pelican-fishing-kayak' }
-)
 
 exports.blackhawkoutdoor = _blackhawkoutdoor
